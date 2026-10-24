@@ -1,36 +1,42 @@
 name: Test de seguridad
-on: 
-workflow_dispatch:
-  inputs:
-    run_security_tests:
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_security_tests:
         description: '¿Deseas ejecutar los Tests de Seguridad?'
         required: true
         type: boolean
         default: true
+
 jobs:
-name: CI & seguridad
-runs-on: ubntu-latest
-steps:
-  - name: Descargar el codigo
-    uses: actions/checkout@v4
-  - name: Validar archvivo ventas.json
-    run: |
+  ci_seguridad:
+    name: CI & seguridad
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+
+      - name: Validar archvivo ventas.json
+        run: |
           echo "Validando formato JSON de ventas.json..."
           python3 -m json.tool ventas.json > /dev/null
           echo "Archivo ventas.json es un JSON válido."
-  - name: Escaneo de Seguridad (API Keys)
-    if: ${{ inputs.run_security_tests == true }}
-    run: |
-      echo "Ejecutando escaneo de seguridad en Python..."
-      python3 -c "
-      with open('ventas.json') as f:
-          content = f.read()
-          if 'api_key' in content.lower() or 'secret' in content.lower():
-              print('Advertencia: Posible clave expuesta detectada.')
-          else:
-              print('No se han detectado credenciales expuestas en ventas.json.')
+
+      - name: Escaneo de Seguridad (API Keys)
+        if: ${{ inputs.run_security_tests == true }}
+        run: |
+          echo "Ejecutando escaneo de seguridad en Python..."
+          python3 -c "
+          with open('ventas.json') as f:
+              content = f.read()
+              if 'api_key' in content.lower() or 'secret' in content.lower():
+                  print('Advertencia: Posible clave expuesta detectada.')
+              else:
+                  print('No se han detectado credenciales expuestas en ventas.json.')
           "
-procesamiento:
+
+  procesamiento:
     name: Procesamiento (${{ matrix.entorno }})
     runs-on: ubuntu-latest
     needs: ci_seguridad
@@ -44,7 +50,7 @@ procesamiento:
       - name: Procesar datos y generar reporte
         run: |
           echo "Procesando datos en el entorno: ${{ matrix.entorno }}..."
-          mkdir -p reportes 
+          mkdir -p reportes
           echo "Reporte de ventas para el entorno: ${{ matrix.entorno }}" > reportes/reporte_${{ matrix.entorno }}.txt
           echo "Fecha de ejecucion: $(date)" >> reportes/reporte_${{ matrix.entorno }}.txt
           echo "Estado: Procesamiento completado con exito." >> reportes/reporte_${{ matrix.entorno }}.txt
@@ -55,10 +61,10 @@ procesamiento:
           name: reporte-${{ matrix.entorno }}
           path: reportes/reporte_${{ matrix.entorno }}.txt
 
-notificacion:
+  notificacion:
     name: Notificación de Éxito
     runs-on: ubuntu-latest
-    needs: procesamiento # necesita que se hayan ejecutado los otros dos jobs
+    needs: procesamiento
     steps:
       - name: Simular envío de notificación a Discord
         env:
