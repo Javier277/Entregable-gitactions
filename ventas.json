@@ -1,7 +1,7 @@
 {
-    "tienda":"Comercio Valencia"
-    "ventas": [
-        {"id": 1, "producto": Portatil", "importe": 1200},
-        {"id": 2, "producto": "Teclado", "importe": 45}
-    ]
+  "tienda": "Comercio Valencia",
+  "ventas": [
+    {"id": 1, "producto": "Portatil", "importe": 1200},
+    {"id": 2, "producto": "Teclado", "importe": 45}
+  ]
 }
