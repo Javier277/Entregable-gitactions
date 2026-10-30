@@ -1,7 +1,7 @@
 name: Test de seguridad
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # para ejecutarlo manualmente
     inputs:
       run_security_tests:
         description: '¿Deseas ejecutar los Tests de Seguridad?'
@@ -17,7 +17,7 @@ jobs:
       - name: Descargar el codigo
         uses: actions/checkout@v4
 
-      - name: Validar archvivo ventas.json
+      - name: Validar archivo ventas.json
         run: |
           echo "Validando formato JSON de ventas.json..."
           python3 -m json.tool ventas.json > /dev/null
