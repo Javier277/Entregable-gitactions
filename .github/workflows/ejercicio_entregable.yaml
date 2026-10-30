@@ -1,14 +1,13 @@
 name: Test de seguridad
 
 on:
-  workflow_dispatch: # para ejecutarlo manualmente
+  workflow_dispatch: #para ejecutarlo manualmente
     inputs:
       run_security_tests:
-        description: '¿Deseas ejecutar los Tests de Seguridad?'
+        description: '¿Ejecutar tests de seguridad? (escribe: si / no)'
         required: true
-        type: boolean
-        default: true
-
+        type: string
+        default: 'si'
 jobs:
   ci_seguridad:
     name: CI & seguridad
